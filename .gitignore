@@ -11,3 +11,8 @@ venv/
 # Ignorar arquivos e diretórios específicos do Power BI
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
+
+# Passo a passo para publicar
+git.md
+teste
+teste.pub

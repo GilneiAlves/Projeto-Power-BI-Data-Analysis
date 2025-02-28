@@ -1,0 +1,13 @@
+# Ignorar pastas de ambiente virtual .venv
+venv/
+.venv/
+
+# Ignorar todos os arquivos CSV
+*.csv
+
+# Ignorar os bancos de dados db
+*.db
+
+# Ignorar arquivos e diretórios específicos do Power BI
+**/.pbi/localSettings.json
+**/.pbi/cache.abf

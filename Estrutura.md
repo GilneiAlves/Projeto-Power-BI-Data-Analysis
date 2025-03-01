@@ -1,4 +1,4 @@
-# Projeto-Power-BI-Data-Analysis/
+# Projeto-Power-BI-Data-Analysis
 
 ``` 
 ├── data/                            # Pasta para armazenar dados brutos

@@ -18,7 +18,7 @@ from .data_analysis import (
     contar_valores_unicos,
     detectar_skewness,
     encontrar_colunas_constantes,
-    matriz_correlacao,
+    plot_matriz_correlacao_Encoding,
     outliers_por_coluna,
     visualizar_distribuicao
 )

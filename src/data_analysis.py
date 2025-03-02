@@ -35,22 +35,48 @@ def contar_valores_unicos(df):
     return df.nunique().to_frame(name="Valores Únicos")
 
 # Retorna e plota a matriz de correlação das variáveis numéricas.
-def matriz_correlacao(df, metodo="pearson"):
+def plot_matriz_correlacao_Encoding(df, graphWidth=8, method="pearson"):
     """
-    Gera e plota uma matriz de correlação entre as variáveis numéricas.
+    Converte colunas categóricas para numéricas, gera e plota uma matriz de correlação,
+    e mantém os rótulos originais no gráfico.
 
     Parâmetros:
     - df: DataFrame do pandas.
-    - metodo: Método de correlação ('pearson', 'spearman', 'kendall').
+    - graphWidth: Largura da figura do gráfico.
+    - method: Método de correlação ('pearson', 'spearman', 'kendall').
 
     Retorna:
-    - DataFrame com a matriz de correlação.
+    - Matriz de correlação (DataFrame).
     """
-    plt.figure(figsize=(10, 6))
-    sns.heatmap(df.corr(method=metodo), annot=True, cmap="coolwarm", fmt=".2f")
-    plt.title(f'Matriz de Correlação ({metodo})')
+    df_encoded = df.copy()
+
+    # Dicionário para armazenar mapeamento reverso dos encodings
+    encoding_maps = {}
+
+    # Converte colunas categóricas para numéricas
+    for col in df.select_dtypes(include=["object", "category"]).columns:
+        df_encoded[col] = df_encoded[col].astype("category").cat.codes
+        encoding_maps[col] = dict(enumerate(df[col].astype("category").cat.categories))
+
+    # Filtra apenas colunas numéricas para a matriz de correlação
+    df_numerico = df_encoded.select_dtypes(include=["number"])
+
+    # Verifica se há pelo menos duas colunas numéricas
+    if df_numerico.shape[1] < 2:
+        print(f'No correlation plots shown: The number of numeric columns ({df_numerico.shape[1]}) is less than 2.')
+        return None
+
+    # Calcula a matriz de correlação
+    corr = df_numerico.corr(method=method)
+
+    # Configura o gráfico
+    plt.figure(figsize=(graphWidth, graphWidth))
+    sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f", xticklabels=df_numerico.columns, yticklabels=df_numerico.columns)
+    plt.title(f'Matriz de Correlação ({method})')
     plt.show()
-    return df.corr(method=metodo)
+
+    return corr
+
 
 # Retorna colunas que possuem apenas um valor único.
 def encontrar_colunas_constantes(df):

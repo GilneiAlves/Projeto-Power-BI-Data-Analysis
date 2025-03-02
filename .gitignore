@@ -16,7 +16,3 @@ venv/
 git.md
 teste
 teste.pub
-
-# Arquivos temporarios
-__pycache__
-*.pyc

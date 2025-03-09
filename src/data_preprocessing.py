@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+import unidecode
 # Substitui outliers por NaN usando desvio padrão ou IQR.
 def excluir_outliers(df, col_name, metodo="desvio_padrao", fator=2.7):
     """
@@ -214,3 +214,16 @@ def trata_valores_nulos(df: pd.DataFrame, metodo: str = 'remover', valor: float 
 
     else:
         raise ValueError("Método inválido. Escolha entre 'remover', 'preencher_medio', 'preencher_mediana', 'preencher_moda' ou 'preencher_valor'.")
+
+# Limpa o texto e transforma em minúsculas
+def normalizar_texto(texto):
+    """
+    Remove acentos e transforma o texto em minúsculas.
+    
+    Parâmetros:
+    - texto (str): String a ser normalizada.
+
+    Retorna:
+    - str: Texto sem acentos e em minúsculas.
+    """
+    return unidecode.unidecode(texto).lower()

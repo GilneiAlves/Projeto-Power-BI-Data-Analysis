@@ -16,3 +16,9 @@ venv/
 git.md
 teste
 teste.pub
+
+# Arquivos Python compilados
+__pycache__/
+*.log
+*.pyc
+*.swp

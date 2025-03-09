@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.patches as mpatches
 
 # Plota um histograma + densidade para visualizar a distribuição de uma variável.
 def visualizar_distribuicao(df, col_name, bins=30):
@@ -171,3 +172,89 @@ def analisar_categorias(df):
     """
     colunas_categoricas = df.select_dtypes(include=["object", "category"]).columns
     return df[colunas_categoricas].nunique().to_frame(name="Categorias Únicas")
+
+# Esta função gera gráficos de distribuição para múltiplas colunas categóricas ou numéricas de um DF.
+def plotar_distribuicoes_multiplas_colunas(df, colunas_x, quantidade_categorias=10, numero_colunas_subplots=2, ordenar_por='contagem', exibir_rotulos=False):
+    """
+    Plota a distribuição de múltiplas colunas do DataFrame em subplots.
+    - Agrupa categorias menos frequentes em "Outros" se o número de categorias for maior que `quantidade_categorias`.
+    - Ordena as categorias conforme especificado em `ordenar_por`.
+    - Permite exibir os valores das contagens sobre as barras conforme o parâmetro `exibir_rotulos`.
+
+    Args:
+        df (pd.DataFrame): O DataFrame contendo os dados.
+        colunas_x (list): Lista de colunas a serem plotadas.
+        quantidade_categorias (int): Número máximo de categorias antes de agrupar em "Outros".
+        numero_colunas_subplots (int): Número de colunas nos subplots.
+        ordenar_por (str): Critério de ordenação ('contagem' ou 'indice').
+        exibir_rotulos (bool): Se True, exibe rótulos com os valores sobre as barras.
+    """
+    numero_linhas_subplots = (len(colunas_x) + numero_colunas_subplots - 1) // numero_colunas_subplots
+    plt.figure(figsize=(12, 6 * numero_linhas_subplots))
+
+    for indice, coluna_x in enumerate(colunas_x):
+        plt.subplot(numero_linhas_subplots, numero_colunas_subplots, indice + 1)
+
+        if coluna_x not in df.columns:
+            print(f"Coluna '{coluna_x}' não encontrada no DataFrame.")
+            continue
+
+        dados_coluna = df[coluna_x]
+
+        # Se for numérica, plota histograma
+        if pd.api.types.is_numeric_dtype(dados_coluna):
+            dados_coluna.hist()
+            plt.xlabel(coluna_x)
+            plt.ylabel('Contagem')
+            plt.title(f'Distribuição de {coluna_x}')
+            plt.xticks(rotation=45)
+
+        else:
+            contagem_valores = dados_coluna.value_counts()
+            agregou_outros = False  
+            num_categorias_agregadas = 0  
+
+            # Se houver mais categorias do que o limite, agrupa as menores em "Outros"
+            if len(contagem_valores) > quantidade_categorias:
+                top_n = contagem_valores.nlargest(quantidade_categorias)
+                contagem_outros = contagem_valores[quantidade_categorias:].sum()
+                num_categorias_agregadas = len(contagem_valores) - quantidade_categorias  
+                top_n.loc['Outros'] = contagem_outros
+                contagem_valores = top_n
+                agregou_outros = True
+
+            # Ordena conforme o critério escolhido
+            if ordenar_por == 'contagem':
+                contagem_valores = contagem_valores.sort_values(ascending=False)
+            elif ordenar_por == 'indice':
+                contagem_valores = contagem_valores.sort_index()
+
+            # Definir cores: "Outros" será laranja, o resto azul
+            cores = ['orange' if categoria == 'Outros' else 'royalblue' for categoria in contagem_valores.index]
+
+            # Plotando gráfico de barras
+            ax = contagem_valores.plot.bar(color=cores)
+            plt.xlabel(coluna_x)
+            plt.ylabel('Contagem')
+            plt.title(f'Contagem de {coluna_x}')
+            
+            # Adiciona legenda correta para "Outros"
+            if agregou_outros:
+                legenda_outros = mpatches.Patch(color='orange', label='Outros')
+                plt.legend(handles=[legenda_outros], loc='upper right', fontsize=10, frameon=False)
+
+                # Adiciona anotação dentro do gráfico informando quantas categorias foram agregadas
+                texto = f"Agrupando {num_categorias_agregadas:,.0f}".replace(",", ".") + " categorias"
+                max_y = contagem_valores.max()  
+                plt.text(len(contagem_valores) - 1, max_y * 0.9, texto, ha='right', fontsize=10, color='black')
+
+            # Exibir rótulos das contagens sobre as barras, se ativado
+            if exibir_rotulos:
+                for i, valor in enumerate(contagem_valores):
+                    plt.text(i, valor + (valor * 0.02), f"{valor:,.0f}".replace(",", "."), ha='center', fontsize=9, color='black')
+
+            plt.xticks(rotation=45)
+
+    plt.tight_layout()
+    plt.show()
+

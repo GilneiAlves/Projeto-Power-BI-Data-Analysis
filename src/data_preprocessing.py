@@ -173,8 +173,6 @@ def gerar_resumo_estatistico(df):
     resumo = df.describe().T
     resumo["mediana"] = df.median()
     return resumo[["count", "mean", "mediana", "std", "min", "max"]]
-import pandas as pd
-import numpy as np
 
 # Tratar valores nulos (NaN) em um DataFrame. A função permitirá a escolha do método de tratamento...
 def trata_valores_nulos(df: pd.DataFrame, metodo: str = 'remover', valor: float = None) -> pd.DataFrame:

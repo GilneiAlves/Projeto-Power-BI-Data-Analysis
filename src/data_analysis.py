@@ -78,7 +78,6 @@ def plot_matriz_correlacao_Encoding(df, graphWidth=8, method="pearson"):
 
     return corr
 
-
 # Retorna colunas que possuem apenas um valor único.
 def encontrar_colunas_constantes(df):
     """
@@ -161,17 +160,6 @@ def contar_categorias(df, col_name, top_n=10):
     - DataFrame com as categorias mais frequentes.
     """
     return df[col_name].value_counts().head(top_n).to_frame(name="Frequência")
-
-# Exibe quantas categorias únicas cada variável categórica tem.
-def analisar_categorias(df):
-    """
-    Analisa colunas categóricas do DataFrame.
-
-    Retorna:
-    - DataFrame com o número de categorias únicas por coluna categórica.
-    """
-    colunas_categoricas = df.select_dtypes(include=["object", "category"]).columns
-    return df[colunas_categoricas].nunique().to_frame(name="Categorias Únicas")
 
 # Esta função gera gráficos de distribuição para múltiplas colunas categóricas ou numéricas de um DF.
 def plotar_distribuicoes_multiplas_colunas(df, colunas_x, quantidade_categorias=10, numero_colunas_subplots=2, ordenar_por='contagem', exibir_rotulos=False):
@@ -257,4 +245,3 @@ def plotar_distribuicoes_multiplas_colunas(df, colunas_x, quantidade_categorias=
 
     plt.tight_layout()
     plt.show()
-

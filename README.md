@@ -97,9 +97,4 @@ Após a compra de um produto na Olist Store, o vendedor é notificado para atend
 - Desenvolvimento de dashboards interativos com gráficos e tabelas.
 - Publicação do relatório no Power BI Service (.pbip).
 
-### 6. Publicação no GitHub
 
-- Criação de um repositório no GitHub.
-- Upload dos arquivos do projeto (código Python, arquivos de dados tratados, relatório do Power BI, etc.).
-- Atualização do `README.md` com informações sobre o projeto.
-- Criação de uma `Estrutura.md` para nortear o desenvolvimento do projeto.
